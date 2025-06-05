@@ -3,6 +3,7 @@ from db.models import User
 from db import db
 from utils.auth_utils import hash_password
 from utils.auth_utils import verify_password
+from utils.jwt_utils import generate_token
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -14,14 +15,18 @@ def login():
 
     user = User.query.filter_by(email=email).first()
 
-    # ✅ Check if user exists before trying to access user.password
     if not user:
         return jsonify({"error": "Email not registered"}), 404
 
     if not verify_password(user.password, password):
         return jsonify({"error": "Invalid password"}), 401
 
-    return jsonify({"message": f"Welcome back, {user.name}!"}), 200
+    token = generate_token(user.id)
+
+    return jsonify({
+        "message": f"Welcome back, {user.name}!",
+        "token": token
+    }), 200
 
 @auth_bp.route('/signup', methods=['POST'])
 def signup():

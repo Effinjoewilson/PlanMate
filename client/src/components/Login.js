@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "../styles/Form.css";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -11,22 +12,19 @@ function Login() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(""); // Clear previous errors
+const navigate = useNavigate();
 
-    try {
-      const res = await axios.post("http://localhost:5000/api/login", form);
-      alert(res.data.message);
-    } catch (err) {
-      // ✅ Read error from backend if present
-      if (err.response && err.response.data && err.response.data.error) {
-        setError(err.response.data.error);
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
-    }
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await axios.post("http://localhost:5000/api/login", form);
+    localStorage.setItem("token", res.data.token); // ✅ store JWT
+    localStorage.setItem("user", JSON.stringify(res.data.user)); // optional
+    navigate("/dashboard"); // ✅ redirect
+  } catch (err) {
+    // handle error
+  }
+};
 
   return (
     <div className="form-container">
