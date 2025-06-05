@@ -28,3 +28,10 @@ button {
   color: white;
   border: none;
 }
+
+.error {
+  color: red;
+  margin-top: 10px;
+  font-weight: bold;
+}
+

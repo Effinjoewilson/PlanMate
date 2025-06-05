@@ -1,4 +1,8 @@
 from flask import Blueprint, request, jsonify
+from db.models import User
+from db import db
+from utils.auth_utils import hash_password
+from utils.auth_utils import verify_password
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -7,8 +11,17 @@ def login():
     data = request.json
     email = data.get('email')
     password = data.get('password')
-    return jsonify({"message": f"Logged in as {email}"})
 
+    user = User.query.filter_by(email=email).first()
+
+    # ✅ Check if user exists before trying to access user.password
+    if not user:
+        return jsonify({"error": "Email not registered"}), 404
+
+    if not verify_password(user.password, password):
+        return jsonify({"error": "Invalid password"}), 401
+
+    return jsonify({"message": f"Welcome back, {user.name}!"}), 200
 
 @auth_bp.route('/signup', methods=['POST'])
 def signup():
@@ -16,4 +29,13 @@ def signup():
     name = data.get('name')
     email = data.get('email')
     password = data.get('password')
-    return jsonify({"message": f"User {name} ({email}) registered successfully"})
+
+    if User.query.filter_by(email=email).first():
+        return jsonify({"error": "Email already registered"}), 409
+
+    hashed = hash_password(password)
+    user = User(name=name, email=email, password=hashed)
+    db.session.add(user)
+    db.session.commit()
+
+    return jsonify({"message": "Signup successful"}), 201
