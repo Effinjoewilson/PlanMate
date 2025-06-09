@@ -12,19 +12,20 @@ function Login() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const res = await axios.post("http://localhost:5000/api/login", form);
-    localStorage.setItem("token", res.data.token); // ✅ store JWT
-    localStorage.setItem("user", JSON.stringify(res.data.user)); // optional
-    navigate("/dashboard"); // ✅ redirect
-  } catch (err) {
-     setError("Invalid email or password.");
-  }
-};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post("http://localhost:5000/api/login", form, {
+        withCredentials: true // 👈 important to include cookies
+      });
+      navigate("/dashboard");
+    } catch (err) {
+      setError("Invalid email or password.");
+    }
+  };
+
 
   return (
     <div className="form-container">
