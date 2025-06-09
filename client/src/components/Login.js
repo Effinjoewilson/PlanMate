@@ -22,7 +22,7 @@ const handleSubmit = async (e) => {
     localStorage.setItem("user", JSON.stringify(res.data.user)); // optional
     navigate("/dashboard"); // ✅ redirect
   } catch (err) {
-    // handle error
+     setError("Invalid email or password.");
   }
 };
 

@@ -18,6 +18,13 @@ function Dashboard() {
     }
   }, []);
 
+  useEffect(() => {
+    fetch('https://wttr.in/?format=j1')
+      .then(res => res.json())
+      .then(data => setWeather(data))
+      .catch(err => console.error('Weather fetch error:', err));
+  }, []);
+
   const handleDateClick = (date) => {
     setSelectedDate(date);
     setShowCard(true);
