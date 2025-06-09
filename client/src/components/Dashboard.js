@@ -1,14 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../styles/dashboard.css";
 
-function Dashboard({ user }) {
+function Dashboard() {
+  const [user, setUser] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showCard, setShowCard] = useState(false);
   const [activityText, setActivityText] = useState("");
   const [loadingActivity, setLoadingActivity] = useState(false);
   const [weather, setWeather] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   const handleDateClick = (date) => {
     setSelectedDate(date);

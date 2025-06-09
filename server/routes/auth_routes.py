@@ -25,7 +25,12 @@ def login():
 
     return jsonify({
         "message": f"Welcome back, {user.name}!",
-        "token": token
+        "token": token,
+        "user": {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email
+        }
     }), 200
 
 @auth_bp.route('/signup', methods=['POST'])
