@@ -12,6 +12,7 @@ function Dashboard() {
   const [activityText, setActivityText] = useState("");
   const [loadingActivity, setLoadingActivity] = useState(false);
   const [weather, setWeather] = useState(null);
+  const [activities, setActivities] = useState([]);
 
   useEffect(() => {
     axios
@@ -31,14 +32,63 @@ function Dashboard() {
   const handleDateClick = (date) => {
     setSelectedDate(date);
     setShowCard(true);
-    setLoadingActivity(false);
+    setLoadingActivity(true);
     setActivityText("");
+
+    // Fetch activities for that date
+    const dateString = date.toLocaleDateString("en-CA", {
+      timeZone: "Asia/Kolkata"
+    });
+    axios
+      .get(`http://localhost:5000/api/activities?date=${dateString}`, { withCredentials: true })
+      .then((res) => setActivities(res.data))
+      .catch(() => setActivities([]))
+      .finally(() => setLoadingActivity(false));
   };
 
+
   const saveActivity = () => {
-    // Logic to save activityText
-    setShowCard(false);
+    const trimmedText = activityText.trim();
+
+    if (!trimmedText) {
+      alert("Please enter some activity before saving.");
+      return;
+    }
+    const dateString = selectedDate.toLocaleDateString("en-CA", {
+      timeZone: "Asia/Kolkata"
+    });
+
+    axios
+      .post(
+        "http://localhost:5000/api/activities",
+        { date: dateString, text: activityText, status: "Not started" },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        setActivities((prev) => [
+          ...prev,
+          { id: Date.now(), text: activityText, status: "Not started" },
+        ]);
+        setActivityText("");
+      })
+      .catch((err) => console.error("Save error:", err));
   };
+
+  const handleStatusChange = (activityId, newStatus) => {
+    axios
+      .put(
+        `http://localhost:5000/api/activities/${activityId}`,
+        { status: newStatus },
+        { withCredentials: true }
+      )
+      .then(() => {
+        setActivities((prev) =>
+          prev.map((a) => (a.id === activityId ? { ...a, status: newStatus } : a))
+        );
+      })
+      .catch((err) => console.error("Update error:", err));
+  };
+
 
   const closeCard = () => {
     setShowCard(false);
@@ -99,7 +149,7 @@ function Dashboard() {
                       rows={8}
                       value={activityText}
                       onChange={(e) => setActivityText(e.target.value)}
-                      style={{ width: "100%", fontSize: "1rem" }}
+                      style={{ width: "100%", height: "15%", fontSize: "1rem" }}
                       placeholder="Add your activity for this date here..."
                     />
                     <div style={{ marginTop: "15px" }}>
@@ -110,11 +160,38 @@ function Dashboard() {
                         Close
                       </button>
                     </div>
+
+                    {/* List of saved activities */}
+                    <div style={{ textAlign: "left", marginTop: "20px" }}>
+                      <h4>Saved Activities:</h4>
+                      {activities.length === 0 ? (
+                        <p>No activities saved for this date.</p>
+                      ) : (
+                        <ol>
+                          {activities.map((act, index) => (
+                            <li key={act.id} style={{ marginBottom: "10px" }}>
+                              {act.text}
+                              <select
+                                value={act.status}
+                                onChange={(e) => handleStatusChange(act.id, e.target.value)}
+                                style={{ marginLeft: "15px" }}
+                              >
+                                <option value="Not started">Not started</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Completed">Completed</option>
+                              </select>
+                            </li>
+                          ))}
+                        </ol>
+
+                      )}
+                    </div>
                   </>
                 )}
               </div>
             </div>
           )}
+
         </>
       )}
     </div>
