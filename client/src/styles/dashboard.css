@@ -104,6 +104,57 @@
   box-shadow: none;         /* optional: remove extra shadow if any */
 }
 
+/* Style the navigation arrows */
+.react-calendar__navigation button {
+  color: #3498db; /* Change this to your desired color */
+  font-size: 1.2rem;
+  background: transparent;
+  border: none;
+}
+
+.react-calendar__navigation button:hover {
+  background-color: #ecf6fd;
+  color: #2980b9;
+}
+
+/* Default date tiles */
+.react-calendar__tile {
+  background: white;
+  color: #34495e; /* Change text color */
+  border-radius: 6px;
+  padding: 10px 0;
+  transition: background-color 0.2s ease;
+}
+
+/* Hover effect on date tiles */
+.react-calendar__tile:hover {
+  background: #d0ebff;
+  color: #2c3e50;
+}
+
+/* Selected date */
+.react-calendar__tile--active {
+  background: #3498db !important;
+  color: white !important;
+}
+
+/* Today's date */
+.react-calendar__tile--now {
+  background: #f1c40f;
+  color: white;
+}
+
+/* Selected date when it's also today */
+.react-calendar__tile--now.react-calendar__tile--active {
+  background: #e67e22 !important;
+}
+
+/* Dates from the previous or next month */
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: #bbb;  /* light gray or faded tone */
+  opacity: 0.6; /* optional: adds "blurred" look */
+}
+
 .dashboard-center {
   display: flex;
   justify-content: center;
