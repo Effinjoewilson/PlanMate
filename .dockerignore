@@ -1,0 +1,28 @@
+# Node modules and cache
+client/node_modules
+client/.cache
+client/.env
+
+# Python virtual env
+server/venv
+
+# Git and OS
+.git
+.gitignore
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Logs and environment
+*.log
+.env
+server/.env
+
+# Local editor configs
+.vscode/
+*.swp

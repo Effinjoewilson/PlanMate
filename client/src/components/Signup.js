@@ -10,7 +10,7 @@ function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await axios.post("http://localhost:5000/api/signup", form);
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/signup`, form);
     alert(res.data.message);
   };
 

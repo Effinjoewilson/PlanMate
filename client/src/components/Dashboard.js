@@ -15,8 +15,7 @@ function Dashboard() {
   const [activities, setActivities] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/me", { withCredentials: true })
+    axios.get(`${process.env.REACT_APP_API_URL}/api/me`, { withCredentials: true })
       .then((res) => setUser(res.data))
       .catch(() => setUser(null))
       .finally(() => setIsLoading(false));
@@ -40,7 +39,7 @@ function Dashboard() {
       timeZone: "Asia/Kolkata"
     });
     axios
-      .get(`http://localhost:5000/api/activities?date=${dateString}`, { withCredentials: true })
+      .get(`${process.env.REACT_APP_API_URL}/api/activities?date=${dateString}`, { withCredentials: true })
       .then((res) => setActivities(res.data))
       .catch(() => setActivities([]))
       .finally(() => setLoadingActivity(false));
@@ -60,7 +59,7 @@ function Dashboard() {
 
     axios
       .post(
-        "http://localhost:5000/api/activities",
+        `${process.env.REACT_APP_API_URL}/api/activities`,
         { date: dateString, text: activityText, status: "Not started" },
         { withCredentials: true }
       )
@@ -77,7 +76,7 @@ function Dashboard() {
   const handleStatusChange = (activityId, newStatus) => {
     axios
       .put(
-        `http://localhost:5000/api/activities/${activityId}`,
+        `${process.env.REACT_APP_API_URL}/api/activities/${activityId}`,
         { status: newStatus },
         { withCredentials: true }
       )

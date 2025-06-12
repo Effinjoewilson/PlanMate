@@ -17,7 +17,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/login", form, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/login`, form, {
         withCredentials: true // 👈 important to include cookies
       });
       navigate("/dashboard");
