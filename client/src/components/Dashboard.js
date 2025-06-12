@@ -88,6 +88,16 @@ function Dashboard() {
       .catch((err) => console.error("Update error:", err));
   };
 
+  const handleDelete = (activityId) => {
+    axios
+      .delete(`${process.env.REACT_APP_API_URL}/api/activities/${activityId}`, {
+        withCredentials: true,
+      })
+      .then(() => {
+        setActivities((prev) => prev.filter((a) => a.id !== activityId));
+      })
+      .catch((err) => console.error("Delete error:", err));
+  };
 
   const closeCard = () => {
     setShowCard(false);
@@ -166,22 +176,51 @@ function Dashboard() {
                       {activities.length === 0 ? (
                         <p>No activities saved for this date.</p>
                       ) : (
-                        <ol>
+                        <ol style={{ paddingLeft: "20px", marginTop: "10px", marginBottom: "0" }}>
                           {activities.map((act, index) => (
-                            <li key={act.id} style={{ marginBottom: "10px" }}>
-                              {act.text}
+                            <li
+                              key={act.id}
+                              style={{
+                                marginBottom: "4px",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "8px",
+                                fontSize: "0.95rem",
+                              }}
+                            >
+                              <span style={{ flexGrow: 1 }}>{act.text}</span>
                               <select
                                 value={act.status}
                                 onChange={(e) => handleStatusChange(act.id, e.target.value)}
-                                style={{ marginLeft: "15px" }}
+                                style={{
+                                  fontSize: "0.9rem",
+                                  padding: "2px 6px",
+                                }}
                               >
                                 <option value="Not started">Not started</option>
                                 <option value="Pending">Pending</option>
                                 <option value="Completed">Completed</option>
                               </select>
+                              <button
+                                onClick={() => handleDelete(act.id)}
+                                style={{
+                                  color: "#c00",
+                                  background: "transparent",
+                                  border: "none",
+                                  cursor: "pointer",
+                                  fontSize: "1rem",
+                                  padding: "0 4px",
+                                }}
+                                title="Delete"
+                              >
+                                🗑️
+                              </button>
                             </li>
                           ))}
                         </ol>
+
+
+
 
                       )}
                     </div>

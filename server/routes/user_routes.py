@@ -64,3 +64,14 @@ def update_activity_status(current_user, activity_id):
     db.session.commit()
     return jsonify({"message": "Status updated"}), 200
 
+@user_bp.route('/activities/<int:activity_id>', methods=['DELETE'])
+@token_required
+def delete_activity(current_user, activity_id):
+    activity = Activity.query.get(activity_id)
+    if not activity or activity.user_id != current_user.id:
+        return jsonify({"error": "Activity not found"}), 404
+
+    db.session.delete(activity)
+    db.session.commit()
+    return jsonify({"message": "Activity deleted"}), 200
+
