@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../styles/dashboard.css";
 import axios from "axios";
+import { FiLogOut } from "react-icons/fi";
 
 function Dashboard() {
   const [user, setUser] = useState(null);
@@ -99,12 +101,27 @@ function Dashboard() {
       .catch((err) => console.error("Delete error:", err));
   };
 
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/logout`, {}, { withCredentials: true });
+      navigate("/"); // Redirect to Home after logout
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
+
   const closeCard = () => {
     setShowCard(false);
   };
 
   return (
     <div className="home-container">
+      <div className="logout-icon-container">
+        <FiLogOut className="logout-icon" onClick={handleLogout} title="Logout" />
+      </div>
+
       {/* Always render this title area */}
       <h2 className="subtitle">Daily Activity Dashboard</h2>
       <p className="description">Manage your day, track weather, and stay productive</p>
