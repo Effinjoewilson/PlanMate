@@ -16,9 +16,11 @@ def create_app():
     # Import and register routes blueprints
     from routes.auth_routes import auth_bp
     from routes.user_routes import user_bp
+    from routes.admin_routes import admin_bp
 
     app.register_blueprint(auth_bp, url_prefix="/api")
     app.register_blueprint(user_bp, url_prefix="/api")
+    app.register_blueprint(admin_bp, url_prefix="/api")
 
 
     # Create tables if they don't exist

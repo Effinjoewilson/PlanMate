@@ -7,7 +7,7 @@ function PrivateRoute({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/me", { withCredentials: true })
+    axios.get(`${process.env.REACT_APP_API_URL}/api/me`, { withCredentials: true })
       .then(() => setIsAuthenticated(true))
       .catch(() => setIsAuthenticated(false))
       .finally(() => setLoading(false));
